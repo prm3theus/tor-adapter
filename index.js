@@ -2,21 +2,37 @@ const { Validator } = require('external-adapter')
 const tor = require('tor-request')
 
 const createRequest = (input, torIP, torPort, callback) => {
-  const validator = new Validator(input, callback)
+  console.log(input)
+  console.log(callback)
+
+  const validator = new Validator(input, {}, callback)
   const jobRunID = validator.validated.id
+
+  console.log(torIP)
+
   tor.setTorAddress(torIP, torPort)
-  tor.request('https://api.ipify.org', (error, res, body) => {
+  // tor.request(input.data.endpoint, (error, res, body) => {
+  tor.request(`http://${input.data.endPoint}/status`, (error, res, body) => {
+  // tor.request('https://api.ipify.org', (error, res, body) => {
+    console.log(body)
     if (!error) {
       callback(res.statusCode, {
         jobRunID,
-        data: body
+        data: JSON.parse(body)
       })
     } else {
-      callback(500, {
+      console.log('ERROR')
+      console.log(error)
+      callback(200, {
         jobRunID,
-        status: 'errored',
-        error
+        data: JSON.parse({STATUS: `${input.data.endPoint},${500}`})
       })
+
+      // callback(500, {
+      //   jobRunID,
+      //   status: 'errored',
+      //   error
+      // })
     }
   })
 }

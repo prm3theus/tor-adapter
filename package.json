@@ -5,6 +5,7 @@
   "description": "",
   "license": "MIT",
   "scripts": {
+    "start": "TOR_IP=0.0.0.0 TOR_PORT=9050 node app.js",
     "test": "./node_modules/.bin/_mocha --timeout 0"
   },
   "dependencies": {
